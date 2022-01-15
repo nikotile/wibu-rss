@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Dependencies check
+[ -z $(command -v curl) ] && echo "Please install curl" && exit 1
+[ -z $(command -v shup) ] && echo "Please install shup https://github.com/pystardust/shup" && exit 1
+
+# Some initializations
+dir="/home/niko/dev/app/wibu-rss" # To make it absolute, customize if needed
+mkdir -p "$dir/.tmp"
+mkdir -p "$dir/feeds"
+tmpdir="$dir/.tmp" # Just in case in the future
+tmp="$(mktemp -p "$tmpdir")" # I'm too stupid to not use temporary file(s)
+
+# Additional info for the feeds
+feedlink="https://nikotile.xyz/library/rss" # see printNewFeed()
+email="niko@nikotile.xyz" # For support, etc kek
+
+printNewFeed() {
+  host="$1"
+  id="$2"
+  link="$feedlink/$id.xml"
+  title=$(curl -s "$host" | shup "head" "title" | sed "s/^\s*//" | sed "s/<title>//" | sed "s/<\/title>//" | grep "\S")
+  
+  printf "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n<channel>\n<title>%s</title>\n<description>Pembaruan dari %s.</description><language>id</language>\n<link>%s</link>\n<atom:link href=\"%s\" rel=\"self\" type=\"application/rss+xml\" />\n<webMaster>%s</webMaster>\n<!-- content -->\n</channel>\n</rss>" "$title" "$host" "$link" "$link" "$email" > "$dir/feeds/$id.xml"
+}
+
+validateFeed() {
+  id="$1"
+  host="$2"
+
+  # Create a new xml file if doesn't exist
+  [ ! -f "$dir/feeds/$id.xml" ] && printNewFeed "$host" "$id"
+
+  # Additional checks
+  error_empty="Something is wrong with the prexisting xml file.\nPlease check if the feed is not empty.\n"
+  error_invalid="Something is wrong with the prexisting xml file.\nPlease check if the feed is valid.\n"
+  [ ! -s "$dir/feeds/$id.xml" ] && rm $tmp && printf "$error_empty" && exit 1
+  [ -z "$(grep "<!-- content -->" "$dir/feeds/$id.xml")" ] && rm $tmp && printf "$error_invalid" && exit 1
+
+  # Get the actual data from the host(s). Uses a temporary file to make it easier
+  curl -s "$host" > $tmp
+}
+
+# Source functions
+# Since each site has different structures, their function has to be specialized in some way
+for file in "$dir/src"/* ; do
+  . $file
+done
+
+# Actually running the function(s)
+kanau
+mediaformasi
+risamedia
+
+rm -r $tmpdir

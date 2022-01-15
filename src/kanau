@@ -1,0 +1,32 @@
+#!/bin/sh
+
+kanau() {
+  id="kanau"
+  host="https://kanau.org"
+
+  validateFeed "$id" "$host"
+
+  cat $tmp \
+    | shup "article" "h2[title]" "a" \
+    | grep "<a\shref=\"" \
+    | sed "s/\sclass=\"post-title\spost-url\"//" \
+    | sed "s/\sclass=\"post-url\spost-title\"//" \
+    | while read line ; do
+      url=$(echo $line | grep -o "http.*\">" | cut -d '"' -f 1)
+  
+      # Check if post/entry/article already exist
+      [ ! -z "$(grep "$url" "$dir/feeds/$id.xml")" ] && echo "Entry already exists."
+
+      # Proceed if doesn't exist
+      [ -z "$(grep "$url" "$dir/feeds/$id.xml")" ] && curl -s $url > $tmp \
+        && title=$(cat $tmp | shup "title" | sed "s/<title>//" | sed "s/<\/title>//" | sed "s/^\s*//" | grep "\S") \
+        && pubdate=$(cat $tmp | grep "<meta\sproperty=\"article:published_time\"" | grep -o "[0-9]*-[0-9]*-[0-9]*T.*0[0-9]:00") \
+        && content=$(cat $tmp | shup "body" "div" "main" "div" "div" "div" "div" "article" "div[entry-content]" | grep "\S" | sed "s/^\s*//" | awk '{printf("%s", $0)}') \
+        && printf "<!-- content -->\n<item>\n<title>%s</title>\n<pubDate>%s</pubDate>\n<guid>%s</guid>\n<link>%s</link>\n<description><![CDATA[%s]]></description>\n</item>\n" "$title" "$pubdate" "$url" "$url" "$content" > $tmp \
+        && sed -i "/<!-- content -->/ {
+          r $tmp
+          d
+        }" "$dir/feeds/$id.xml" \
+        && echo "Entry inserted."
+    done
+}
