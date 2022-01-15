@@ -4,7 +4,7 @@ Generates RSS feeds from the following Indonesian otaku/weeb news sites:
 - mediaformasi.com
 - www.risamedia.com
 
-If you just want to consoom the feeds, you can get them [here](https://nikotile.xyz/library/rss).
+If you just want to consoom the feeds, you can get them [here](https://nikotile.xyz/library).
 
 ## Tools
 - `shup`, a POSIX HTML parser ([here](https://github.com/pystardust/shup))
