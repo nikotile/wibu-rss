@@ -6,6 +6,8 @@ Generates RSS feeds from the following Indonesian otaku/weeb news sites:
 
 If you just want to consoom the feeds, you can get them [here](https://nikotile.xyz/library).
 
+I just learned that Media Formasi has their own RSS feed. Well, this doesn't hurt.
+
 ## Tools
 - `shup`, a POSIX HTML parser ([here](https://github.com/pystardust/shup))
 - `curl`
