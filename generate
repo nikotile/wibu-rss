@@ -41,6 +41,15 @@ validateFeed() {
   curl -s "$host" > $tmp
 }
 
+archive() {
+  for file in "$dir/feeds"/* ; do
+    date="$(date +"%Y-%m-%d")"
+    newfile="$(echo $file | sed "s/feeds\//archive\/$date-/")"
+    mkdir -p "$dir/archive"
+    cp "$file" "$newfile"
+  done
+}
+
 # Source functions
 # Since each site has different structures, their function has to be specialized in some way
 for file in "$dir/src"/* ; do
@@ -51,5 +60,8 @@ done
 kanau
 mediaformasi
 risamedia
+
+# Archive every 11 pm
+[ "$(date +"%H")" == "23" ] && archive
 
 rm -r $tmpdir
