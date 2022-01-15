@@ -61,7 +61,7 @@ kanau
 mediaformasi
 risamedia
 
-# Archive every 11 pm
-[ "$(date +"%H")" == "23" ] && archive
+# Archive every 11 pm, remember what your system timezone is
+[ "$(date +"%H")" -eq "23" ] && archive
 
 rm -r $tmpdir
