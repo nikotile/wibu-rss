@@ -5,7 +5,7 @@
 [ -z $(command -v shup) ] && echo "Please install shup https://github.com/pystardust/shup" && exit 1
 
 # Some initializations
-dir="/home/niko/dev/app/wibu-rss" # To make it absolute, customize if needed
+dir="/home/niko/dev/app/wibu-rss" # To make it absolute, customize if needed especially if running a cronjob
 mkdir -p "$dir/.tmp"
 mkdir -p "$dir/feeds"
 tmpdir="$dir/.tmp" # Just in case in the future
