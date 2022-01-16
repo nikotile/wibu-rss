@@ -19,7 +19,7 @@ printNewFeed() {
   host="$1"
   id="$2"
   link="$feedlink/$id.xml"
-  title=$(curl -s "$host" | shup "head" "title" | sed "s/^\s*//" | sed "s/<title>//" | sed "s/<\/title>//" | grep "\S")
+  title=$(curl -s "$host" | shup "head" "title" | sed "s/^\s*//" | sed "s/<titl.*>//" | sed "s/<\/title>//" | grep "\S")
   
   printf "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n<channel>\n<title>%s</title>\n<description>Pembaruan dari %s.</description><language>id</language>\n<link>%s</link>\n<atom:link href=\"%s\" rel=\"self\" type=\"application/rss+xml\" />\n<webMaster>%s</webMaster>\n<!-- content -->\n</channel>\n</rss>" "$title" "$host" "$link" "$link" "$email" > "$dir/feeds/$id.xml"
 }
