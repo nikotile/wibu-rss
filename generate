@@ -60,6 +60,7 @@ done
 kanau
 mediaformasi
 risamedia
+tirto
 
 # Archive every 11 pm, remember what your system timezone is
 [ "$(date +"%H")" -eq "23" ] && archive

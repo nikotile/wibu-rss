@@ -1,17 +1,17 @@
 # wibu-rss
 Generates RSS feeds from the following Indonesian otaku/weeb news sites:
-- kanau.org
-- mediaformasi.com
 - www.risamedia.com
+- kanau.org
+- mediaformasi.com, they have their own RSS feed. Well, this doesn't hurt.
+- tirto.id, not actually an otaku site, but hope it's helpful.
 
 If you just want to consoom the feeds, you can get them [here](https://nikotile.xyz/library).
-
-I just learned that Media Formasi has their own RSS feed. Well, this doesn't hurt.
 
 ## Tools
 - `shup`, a POSIX HTML parser ([here](https://github.com/pystardust/shup))
 - `curl`
-- `sed`, `grep`, `awk`, and other tools from the GNU Core Utilities.
+- `sed`, `grep`, `awk`
+- and other tools from the GNU Core Utilities.
 
 ## Usage
 The entry point is `./generate` which will source files/functions inside the `src` folder. Outputs are in the `feeds` folder (will be created by the script if doesn't exist).
