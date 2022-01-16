@@ -1,0 +1,42 @@
+#!/bin/sh
+
+tirto() {
+  id="tirto"
+  host="https://tirto.id"
+
+  validateFeed "$id" "$host"
+
+  cat $tmp \
+    | shup "body" "a" \
+    | grep "<a\shref=\"" \
+    | sed "s/<a\shref=\"//" \
+    | sed "s/\".*$//" \
+    | sed "s/\/?.*//" \
+    | sed "s/?.*$//" \
+    | sed "s/^\//https:\/\/tirto.id\//" \
+    | grep "\S" \
+    | uniq \
+    | while read line ; do
+      # Don't @ me
+      url=$line
+  
+      # Check if post/entry/article already exist
+      [ ! -z "$(grep "$url" "$dir/feeds/$id.xml")" ] && echo "Entry already exists."
+
+      # Proceed if doesn't exist
+      [ -z "$(grep "$url" "$dir/feeds/$id.xml")" ] && curl -s $url > $tmp
+
+      # Check if content and pubdate are empty, meaning not an article
+      content=$(cat $tmp | shup "body" "div" "article" "div[content-text-editor]" | grep "\S" | sed "s/^\s*//" | awk '{printf ("%s", $0)}' | sed "s/<script.*>.*<\/script>//")
+      pubdate=$(cat $tmp | grep "datePublished" | grep -o "[0-9]*-[0-9]*-[0-9]*\s[0-9]*:[0-9]*:[0-9]*" | sed "s/$/+0700/" | xargs -i date -d {} -R)
+
+      [ ! -z "$content" ] && [ ! -z "$pubdate" ] \
+        && title=$(cat $tmp | shup "title" | sed "s/<titl.*\">//" | sed "s/<\/title>//" | sed "s/^\s*//" | grep "\S") \
+        && printf "<!-- content -->\n<item>\n<title>%s</title>\n<pubDate>%s</pubDate>\n<guid>%s</guid>\n<link>%s</link>\n<description><![CDATA[%s]]></description>\n</item>\n" "$title" "$pubdate" "$url" "$url" "$content" > $tmp \
+        && sed -i "/<!-- content -->/ {
+          r $tmp
+          d
+        }" "$dir/feeds/$id.xml" \
+        && echo "Entry inserted."
+    done
+}
