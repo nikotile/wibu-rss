@@ -1,4 +1,6 @@
 # wibu-rss
+⚠ The regex used to parse HTML content may break if the site owners decided to radically change their content layout for some reason. If it happens, let me know.
+
 Generates RSS feeds from the following Indonesian otaku/weeb news sites:
 - www.risamedia.com
 - kanau.org
