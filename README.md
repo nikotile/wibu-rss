@@ -1,6 +1,8 @@
 # wibu-rss
 ⚠ The regex used to parse HTML content may break if the site owners decided to radically change their content layout for some reason. If it happens, let me know.
 
+⚠ July 2022 - Kanau went offline since last month. No futher news from them.
+
 Generates RSS feeds from the following Indonesian otaku/weeb news sites:
 - www.risamedia.com
 - kanau.org
